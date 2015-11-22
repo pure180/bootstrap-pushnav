@@ -1,0 +1,25 @@
+{
+  "dist": {
+    "html":    "dist",
+    "css":     "dist/css",
+    "js":      "dist/js",
+    "fonts":   "dist/fonts",
+    "img":     "dist/img"
+  },
+  "src": {
+    "jade":    "src/jade/templates",
+    "less":    "src/less",
+    "js":      "src/js",
+    "fonts":   "src/fonts",
+    "img":     "src/img"
+  },
+  "watch": {
+    "jade":    "src/jade/**/*.jade",
+    "less":    "src/less/**/*.less",
+    "js":      "src/js/**/*.js",
+    "fonts":   "src/fonts/**/*.*",
+    "img":     "src/img/**/*.*",
+    "bower":   "src/bower_components/**/*.js"
+  },
+  "bower" : "./src/bower_components"
+}

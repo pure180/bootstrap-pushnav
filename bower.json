@@ -1,0 +1,35 @@
+{
+  "name": "bootstrap-pushnav",
+  "description": "jQuery pushnavigation for bootstrap",
+  "main": "gulpfile.js",
+  "authors": [
+    "Daniel Pfisterer (info@daniel-pfisterer.de)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "gulp",
+    "less",
+    "jade",
+    "bower",
+    "bootstrap",
+    "html"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./src/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "font-awesome": "font-awsome#~4.4.0"
+  }
+}

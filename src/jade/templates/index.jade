@@ -1,0 +1,10 @@
+//- test.jade
+extends ../layouts/default
+
+block Vars
+  - var sub = false
+  - var page = {title: 'Page Title', name: 'Start', url: '/', parent: '', index: true}
+
+block main
+  #test_block.test_block(aria-expanded="false")
+  #test_block2.test_block(aria-expanded="false")

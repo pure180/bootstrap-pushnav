@@ -20,10 +20,9 @@
                            '[data-toggle="' + options.data_toggle + '"][data-target="#' + element.id + '"]')
 
     this.$trigger      = this.$shutter.attr('type') === "button" || this.$shutter.hasClass('navbar-toggle') ? this.$shutter : this.$shutter.parent()
-
     if (this.options.toggle) this.toggle()
+  }
 
-    }
   PushNav.VERSION  = '1.0.0'
 
   PushNav.DEFAULTS = {
@@ -41,11 +40,17 @@
   PushNav.prototype.show = function () {
     if(this.$element.hasClass(this.options.active)) return
     show(this.$element, this.$trigger, this.$shutter, this.options)
+
+    if(!this.options.pushElement) return
+    $(this.options.pushElements).addClass(this.options.data_toggle + '_' + this.options.active)
   }
 
   PushNav.prototype.hide = function () {
     if(!this.$element.hasClass(this.options.active)) return
     hide(this.$element, this.$trigger, this.$shutter, this.options)
+
+    if(!this.options.pushElement) return
+    $(this.options.pushElements).removeClass(this.options.data_toggle + '_' + this.options.active)
   }
 
   PushNav.prototype.toggle = function () {
@@ -133,6 +138,9 @@
       $this.attr('aria-expanded', false)
       $target.removeClass( options.active ).attr('aria-expanded', false)
 
+      if(!options.pushElement) return
+      $(options.pushElements).removeClass(options.data_toggle + '_' + options.active)
+
     })
   }
 
@@ -148,9 +156,11 @@
   })
 
   // Close on click outside
+  // Do action outside the common prototype
   $(document).on('click.pushnav.data-api', function (e) {
     var options = $.extend({}, PushNav.DEFAULTS, options)
 
+    // Close Navigation on click outside of trigger or target.
     if (!options.closeOnClickOutside) return
     var closetTarget = $(e.target).closest('[aria-expanded="true"]')
     if (!$(e.target).is(toggle) && closetTarget && !closetTarget.length) {

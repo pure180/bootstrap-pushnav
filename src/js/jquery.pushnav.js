@@ -155,7 +155,6 @@
     Plugin.call($target, option)
   })
 
-  // Close on click outside
   // Do action outside the common prototype
   $(document).on('click.pushnav.data-api', function (e) {
     var options = $.extend({}, PushNav.DEFAULTS, options)
@@ -164,6 +163,13 @@
     if (!options.closeOnClickOutside) return
     var closetTarget = $(e.target).closest('[aria-expanded="true"]')
     if (!$(e.target).is(toggle) && closetTarget && !closetTarget.length) {
+      clearPushNav(e, options)
+    }
+
+    // Close Navigation on click inside a navigation link.
+    if (!options.closeOnClickLink) return
+    var navInside = $('[role="navigation"]').find('a')
+    if($(e.target).is(navInside) && closetTarget.hasClass(options.active)){
       clearPushNav(e, options)
     }
   })

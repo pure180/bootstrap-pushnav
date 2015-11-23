@@ -14,7 +14,8 @@
 
   var PushNav = function(element, options) {
     this.$element      = $(element)
-    this.options       = $.extend({}, PushNav.DEFAULTS, options)
+    this.data          = this.$element.data()
+    this.options       = $.extend({}, PushNav.DEFAULTS, this.data, options)
     this.$shutter      = $('[data-toggle="' + options.data_toggle + '"][href="#' + element.id + '"],' +
                            '[data-toggle="' + options.data_toggle + '"][data-target="#' + element.id + '"]')
 

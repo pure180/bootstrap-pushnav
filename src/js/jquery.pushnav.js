@@ -96,7 +96,7 @@
       .addClass(options.active)
       //.attr('aria-expanded', true)
     shutter
-      .attr('aria-expanded', false)
+      .attr('aria-expanded', true)
   }
 
   function hide (element, trigger, shutter, options) {

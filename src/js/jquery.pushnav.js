@@ -33,8 +33,7 @@
     closeOnClickLink :      true,
     pushElement :           true,
     pushElements :          'body',
-    pushClass :             'push-element',
-    mobileBreakpoint:       1199
+    pushClass :             'push'
   }
 
   PushNav.prototype.show = function () {

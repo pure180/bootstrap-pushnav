@@ -140,9 +140,23 @@
 
       if(!options.pushElement) return
       $(options.pushElements).removeClass(options.data_toggle + '_' + options.active)
+  var SetClasses = function(element) {
+    return $(element).each(function(){
+      var options = $.extend({}, PushNav.DEFAULTS, options),
+          data = $(this).data(),
+          target = getTargetFromTrigger($(this))
 
+      var pushClasses = options.pushElement && options.pushElements ? options.pushClass : ''
+      $('body').addClass(pushClasses)
+
+      if (!data.position) return
+      $(target).addClass(data.position)
     })
   }
+
+  $(document).on('ready.pushnav.data-api', function(){
+    new SetClasses(toggle)
+  })
 
   $(document).on('click.pushnav.data-api', toggle, function (e) {
     var $this   = $(this)
@@ -173,5 +187,7 @@
       clearPushNav(e, options)
     }
   })
+
+
 
 }(jQuery);

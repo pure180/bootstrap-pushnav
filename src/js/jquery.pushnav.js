@@ -40,28 +40,37 @@
     if(this.$element.hasClass(this.options.active)) return
     show(this.$element, this.$trigger, this.$shutter, this.options)
 
-    if(!this.options.pushElement) return
-    $(this.options.pushElements).addClass(this.options.data_toggle + '_' + this.options.active)
+    if (!this.options.pushElement) return
+    $(this.options.pushElements).addClass(this.options.active)
+
+    if (!this.options.position) return
+    $(this.options.pushElements).addClass(this.options.position)
   }
 
   PushNav.prototype.hide = function () {
     if(!this.$element.hasClass(this.options.active)) return
     hide(this.$element, this.$trigger, this.$shutter, this.options)
 
-    if(!this.options.pushElement) return
-    $(this.options.pushElements).removeClass(this.options.data_toggle + '_' + this.options.active)
+    if (!this.options.pushElement) return
+    $(this.options.pushElements).removeClass(this.options.active)
+
+    if (!this.options.position) return
+    $(this.options.pushElements).removeClass(this.options.position)
   }
 
   PushNav.prototype.toggle = function () {
-    this[this.$element.hasClass(this.options.active) ? 'hide' : 'show']()
     this.hideOthers()
+    this[this.$element.hasClass(this.options.active) ? 'hide' : 'show']()
   }
 
   PushNav.prototype.hideOthers = function () {
-    var $notThisShutter = $(toggle).not(this.$shutter)
-    var $notThisElement = getTargetFromTrigger($notThisShutter)
-    var $notThisTrigger = $notThisShutter.attr('type') === "button" || $notThisShutter.hasClass('navbar-toggle') ? $notThisShutter : $notThisShutter.parent()
-    hide($notThisElement, $notThisTrigger, $notThisShutter, this.options)
+    var $notThisShutter = $(toggle).not(this.$shutter), options = this.options
+
+    $notThisShutter.each(function(){
+      var $notThisElement = getTargetFromTrigger($(this))
+      var $notThisTrigger = $(this).attr('type') === "button" || $(this).hasClass('navbar-toggle') ? $(this) : $(this).parent()
+      hide($notThisElement, $notThisTrigger, $(this), options)
+    })
   }
 
   function Plugin(option) {
@@ -93,7 +102,6 @@
       .attr('aria-expanded', true)
     trigger
       .addClass(options.active)
-      //.attr('aria-expanded', true)
     shutter
       .attr('aria-expanded', true)
   }
@@ -107,7 +115,6 @@
       .attr('aria-expanded', false)
     trigger
       .removeClass(options.active)
-      //.attr('aria-expanded', false)
     shutter
       .attr('aria-expanded', false)
   }
@@ -123,8 +130,9 @@
   function clearPushNav(e, options) {
     $(toggle).each( function() {
       var $this    = $(this)
+      var data     = $this.data()
       var $trigger = $this.attr('type') === "button" || $this.hasClass('navbar-toggle') ? $this : $this.parent()
-      var $target   = getTargetFromTrigger($this)
+      var $target  = getTargetFromTrigger($this)
       var relatedTarget = { relatedTarget: this }
 
       if (!$trigger.hasClass( options.active ) && !$target.hasClass( options.active ) ) return
@@ -138,7 +146,14 @@
       $target.removeClass( options.active ).attr('aria-expanded', false)
 
       if(!options.pushElement) return
-      $(options.pushElements).removeClass(options.data_toggle + '_' + options.active)
+      $(options.pushElements).removeClass(options.active)
+
+      if (!data.position) return
+      $(options.pushElements).removeClass(data.position)
+
+    })
+  }
+
   var SetClasses = function(element) {
     return $(element).each(function(){
       var options = $.extend({}, PushNav.DEFAULTS, options),

@@ -2,11 +2,34 @@
 body{
   margin-top: @navbar-height;
 }
-.test_block {
-  width: 150px;
-  height: 150px;
-  background-color: @gray;
-  &.open {
-    background-color: @gray-darker;
+
+@navbar-push-width: 350px;
+
+@navbar-push-transition-duration : .3s;
+@navbar-push-transition-ease: ease;
+
+.navbar {
+  &-push {
+    position: fixed;
+    width: @navbar-push-width;
+    height: @navbar-push-width;
+    background-color: @gray;
+    transition: @navbar-push-transition-duration @navbar-push-transition-ease;
+
+    &.left {
+      left: -@navbar-push-width;
+      transition-property: left;
+
+      &.open {
+        left: 0;
+      }
+    }
+    &.right {
+      right: -@navbar-push-width;
+      transition-property: right;
+    }
+    &.open {
+      right: 0;
+    }
   }
 }

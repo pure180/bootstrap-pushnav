@@ -18,12 +18,15 @@
     this.options       = $.extend({}, PushNav.DEFAULTS, this.data, options)
     this.$shutter      = $('[data-toggle="' + options.data_toggle + '"][href="#' + element.id + '"],' +
                            '[data-toggle="' + options.data_toggle + '"][data-target="#' + element.id + '"]')
+    this.transitioning = null
 
     this.$trigger      = this.$shutter.attr('type') === "button" || this.$shutter.hasClass('navbar-toggle') ? this.$shutter : this.$shutter.parent()
     if (this.options.toggle) this.toggle()
   }
 
   PushNav.VERSION  = '1.0.0'
+
+  PushNav.TRANSITION_DURATION = 300
 
   PushNav.DEFAULTS = {
     toggle :                true,
@@ -37,8 +40,28 @@
   }
 
   PushNav.prototype.show = function () {
-    if(this.$element.hasClass(this.options.active)) return
+    if(this.transitioning || this.$element.hasClass(this.options.active)) return
     show(this.$element, this.$trigger, this.$shutter, this.options)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass(this.options.active + 'ing')
+        .addClass(this.options.active)
+      this.$trigger
+        .removeClass(this.options.active + 'ing')
+        .addClass(this.options.active)
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.pushnav')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
 
     if (!this.options.pushElement) return
     $(this.options.pushElements).addClass(this.options.active)
@@ -48,8 +71,26 @@
   }
 
   PushNav.prototype.hide = function () {
-    if(!this.$element.hasClass(this.options.active)) return
+    if(this.transitioning || !this.$element.hasClass(this.options.active)) return
     hide(this.$element, this.$trigger, this.$shutter, this.options)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('closing')
+        .trigger('hidden.pushnav')
+      this.$trigger
+        .removeClass('closing')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
+
 
     if (!this.options.pushElement) return
     $(this.options.pushElements).removeClass(this.options.active)
@@ -65,11 +106,28 @@
 
   PushNav.prototype.hideOthers = function () {
     var $notThisShutter = $(toggle).not(this.$shutter), options = this.options
-
+    var option = this.options
     $notThisShutter.each(function(){
       var $notThisElement = getTargetFromTrigger($(this))
       var $notThisTrigger = $(this).attr('type') === "button" || $(this).hasClass('navbar-toggle') ? $(this) : $(this).parent()
+
+      if(!$notThisElement.hasClass(option.active)) return
       hide($notThisElement, $notThisTrigger, $(this), options)
+
+      var complete = function () {
+        this.transitioning = 0
+        $notThisElement
+          .removeClass('closing')
+          .trigger('hidden.pushnav')
+        $notThisTrigger
+          .removeClass('closing')
+      }
+
+      if (!$.support.transition) return complete.call(this)
+
+      $notThisElement
+        .one('bsTransitionEnd', $.proxy(complete, this))
+        .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
     })
   }
 
@@ -98,10 +156,10 @@
     element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
     element
-      .addClass(options.active)
+      .addClass(options.active + 'ing')
       .attr('aria-expanded', true)
     trigger
-      .addClass(options.active)
+      .addClass(options.active + 'ing')
     shutter
       .attr('aria-expanded', true)
   }
@@ -112,9 +170,11 @@
     if (startEvent.isDefaultPrevented()) return
     element
       .removeClass(options.active)
+      .addClass('closing')
       .attr('aria-expanded', false)
     trigger
       .removeClass(options.active)
+      .addClass('closing')
     shutter
       .attr('aria-expanded', false)
   }
@@ -141,9 +201,31 @@
 
       if (e.isDefaultPrevented()) return
 
-      $trigger.removeClass( options.active )
+      $trigger
+        .removeClass( options.active )
+        .addClass('closing')
       $this.attr('aria-expanded', false)
-      $target.removeClass( options.active ).attr('aria-expanded', false)
+      $target
+        .removeClass( options.active )
+        .addClass('closing')
+        .attr('aria-expanded', false)
+
+      this.transitioning = 1
+
+      var complete = function () {
+        this.transitioning = 0
+        $target
+          .removeClass('closing')
+          .trigger('hidden.pushnav')
+        $trigger
+          .removeClass('closing')
+      }
+      if (!$.support.transition) return complete.call(this)
+
+      $target
+        .one('bsTransitionEnd', $.proxy(complete, this))
+        .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
+
 
       if(!options.pushElement) return
       $(options.pushElements).removeClass(options.active)
@@ -164,7 +246,7 @@
       $('body').addClass(pushClasses)
 
       if (!data.position) return
-      $(target).addClass(data.position)
+      $(target).addClass(data.position + ' navbar-push')
     })
   }
 

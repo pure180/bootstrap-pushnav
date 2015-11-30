@@ -32,6 +32,7 @@
     toggle :                true,
     data_toggle :           'pushnav',
     active :                'open',
+    transitions:            'transitions',
     closeOnClickOutside :   true,
     closeOnClickLink :      true,
     pushElement :           true,
@@ -47,10 +48,10 @@
 
     var complete = function () {
       this.$element
-        .removeClass(this.options.active + 'ing')
+        .removeClass(this.options.transitions + ' opening')
         .addClass(this.options.active)
       this.$trigger
-        .removeClass(this.options.active + 'ing')
+        .removeClass(this.options.transitions + ' opening')
         .addClass(this.options.active)
       this.transitioning = 0
       this.$element
@@ -63,11 +64,6 @@
       .one('bsTransitionEnd', $.proxy(complete, this))
       .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
 
-    if (!this.options.pushElement) return
-    $(this.options.pushElements).addClass(this.options.active)
-
-    if (!this.options.position) return
-    $(this.options.pushElements).addClass(this.options.position)
   }
 
   PushNav.prototype.hide = function () {
@@ -91,12 +87,6 @@
       .one('bsTransitionEnd', $.proxy(complete, this))
       .emulateTransitionEnd(PushNav.TRANSITION_DURATION)
 
-
-    if (!this.options.pushElement) return
-    $(this.options.pushElements).removeClass(this.options.active)
-
-    if (!this.options.position) return
-    $(this.options.pushElements).removeClass(this.options.position)
   }
 
   PushNav.prototype.toggle = function () {
@@ -112,7 +102,7 @@
       var $notThisTrigger = $(this).attr('type') === "button" || $(this).hasClass('navbar-toggle') ? $(this) : $(this).parent()
 
       if(!$notThisElement.hasClass(option.active)) return
-      hide($notThisElement, $notThisTrigger, $(this), options)
+      hide($notThisElement, $notThisTrigger, $(this), options, true)
 
       var complete = function () {
         this.transitioning = 0
@@ -162,9 +152,16 @@
       .addClass(options.active + 'ing')
     shutter
       .attr('aria-expanded', true)
+
+    if (!options.pushElement) return
+    $(options.pushElements).addClass(options.active)
+
+    if (!options.position) return
+    $(options.pushElements).addClass(options.position)
+
   }
 
-  function hide (element, trigger, shutter, options) {
+  function hide (element, trigger, shutter, options, hideOthers) {
     var startEvent = $.Event('hide.pushnav')
     element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
@@ -177,6 +174,23 @@
       .addClass('closing')
     shutter
       .attr('aria-expanded', false)
+
+    if (!hideOthers) {
+      if (!options.pushElement) return
+      $(options.pushElements).removeClass(options.active)
+
+      if (!options.position) return
+      $(options.pushElements).removeClass(options.position)
+      console.log(options.position)
+    } else {
+      console.log('test')
+      if (options.position === 'left'){
+        $(options.pushElements).removeClass('right')
+      } else if (options.position === 'right') {
+          $(options.pushElements).removeClass('left')
+      }
+    }
+
   }
 
   function getTargetFromTrigger($trigger) {

@@ -182,9 +182,7 @@
 
       if (!options.position) return
       $(options.pushElements).removeClass(options.position)
-      console.log(options.position)
     } else {
-      console.log('test')
       if (options.position === 'left'){
         $(options.pushElements).removeClass('right')
       } else if (options.position === 'right') {

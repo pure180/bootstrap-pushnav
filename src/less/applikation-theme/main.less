@@ -14,22 +14,42 @@ body{
     width: @navbar-push-width;
     height: @navbar-push-width;
     background-color: @gray;
-    transition: @navbar-push-transition-duration @navbar-push-transition-ease;
+
+    &.transitions, {
+      &.left, &.right {
+        transition-property: left right;
+        transition-duration: .3s;
+        transition-timing-function: ease;
+      }
+    }
 
     &.left {
       left: -@navbar-push-width;
-      transition-property: left;
-
       &.open {
         left: 0;
+      }
+      &.transitions {
+        &.opening {
+          left: 0;
+        }
+        &.closing {
+          left: -@navbar-push-width;
+        }
       }
     }
     &.right {
       right: -@navbar-push-width;
-      transition-property: right;
-    }
-    &.open {
-      right: 0;
+      &.open {
+        right: 0;
+      }
+      &.transitions {
+        &.opening {
+          right: 0;
+        }
+        &.closing {
+          right: -@navbar-push-width;
+        }
+      }
     }
   }
 }

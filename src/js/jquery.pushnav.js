@@ -75,10 +75,10 @@
     var complete = function () {
       this.transitioning = 0
       this.$element
-        .removeClass('closing')
+        .removeClass(this.options.transitions + ' closing')
         .trigger('hidden.pushnav')
       this.$trigger
-        .removeClass('closing')
+        .removeClass(this.options.transitions + ' closing')
     }
 
     if (!$.support.transition) return complete.call(this)
@@ -107,10 +107,10 @@
       var complete = function () {
         this.transitioning = 0
         $notThisElement
-          .removeClass('closing')
+          .removeClass(option.transitions + ' closing')
           .trigger('hidden.pushnav')
         $notThisTrigger
-          .removeClass('closing')
+          .removeClass(option.transitions + ' closing')
       }
 
       if (!$.support.transition) return complete.call(this)
@@ -145,11 +145,12 @@
     var startEvent = $.Event('show.pushnav')
     element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
+
     element
-      .addClass(options.active + 'ing')
+      .addClass(options.transitions + ' opening')
       .attr('aria-expanded', true)
     trigger
-      .addClass(options.active + 'ing')
+      .addClass(options.transitions + ' opening')
     shutter
       .attr('aria-expanded', true)
 
@@ -167,11 +168,11 @@
     if (startEvent.isDefaultPrevented()) return
     element
       .removeClass(options.active)
-      .addClass('closing')
+      .addClass(options.transitions + ' closing')
       .attr('aria-expanded', false)
     trigger
       .removeClass(options.active)
-      .addClass('closing')
+      .addClass(options.transitions + ' closing')
     shutter
       .attr('aria-expanded', false)
 
@@ -217,11 +218,11 @@
 
       $trigger
         .removeClass( options.active )
-        .addClass('closing')
+        .addClass(options.transitions + ' closing')
       $this.attr('aria-expanded', false)
       $target
         .removeClass( options.active )
-        .addClass('closing')
+        .addClass(options.transitions + ' closing')
         .attr('aria-expanded', false)
 
       this.transitioning = 1
@@ -229,10 +230,10 @@
       var complete = function () {
         this.transitioning = 0
         $target
-          .removeClass('closing')
+          .removeClass(options.transitions + ' closing')
           .trigger('hidden.pushnav')
         $trigger
-          .removeClass('closing')
+          .removeClass(options.transitions + ' closing')
       }
       if (!$.support.transition) return complete.call(this)
 
